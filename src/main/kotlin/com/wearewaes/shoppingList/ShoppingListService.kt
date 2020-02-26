@@ -24,17 +24,16 @@ class ShoppingListService(private val repo: ShoppingListRepository) {
                 .flatMap { repo.save(it) }
     }
 
-    fun deleteItem(listId: String, itemId: Long): Mono<ShoppingList> {
-        return repo.findById(listId)
-                .map { it.apply { this.list.removeIf { i -> i.id == itemId } } }
-                .flatMap { repo.save(it) }
-    }
+    fun deleteItem(listId: String, itemId: Long): Mono<ShoppingList> =
+            repo.findById(listId)
+                    .map { it.apply { this.list.removeIf { i -> i.id == itemId } } }
+                    .flatMap { repo.save(it) }
 
-    fun deleteAll(listId: String): Mono<ShoppingList> {
-        return repo.findById(listId)
-                .map { it.apply { this.list.clear() } }
-                .flatMap { repo.save(it) }
-    }
+
+    fun deleteAll(listId: String): Mono<ShoppingList> =
+            repo.findById(listId)
+                    .map { it.apply { this.list.clear() } }
+                    .flatMap { repo.save(it) }
 
     fun updateQuantity(listId: String, itemId: Long, quantity: Int): Mono<ShoppingList> {
         require(quantity > 0)
@@ -43,9 +42,14 @@ class ShoppingListService(private val repo: ShoppingListRepository) {
                 .flatMap { repo.save(it) }
     }
 
-    fun getItems(listId: String, sortBy: String): Mono<List<ListItem>> {
-        val prop = ListItem::class.memberProperties.single { it.name == sortBy }
-        return repo.findById(listId)
-                .map { it.list.toMutableList().apply { this.sortBy { li -> prop.get(li) as Comparable<Any> } } }
-    }
+    fun getItems(listId: String, sortBy: String): Mono<List<ListItem>> =
+            repo.findById(listId)
+                    .map {
+                        it.list.toMutableList().apply {
+                            this.sortBy { li ->
+                                val prop = ListItem::class.memberProperties.single { p -> p.name == sortBy }
+                                prop.get(li) as Comparable<Any>
+                            }
+                        }
+                    }
 }
