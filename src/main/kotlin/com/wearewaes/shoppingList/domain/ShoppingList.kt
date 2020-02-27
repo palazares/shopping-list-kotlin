@@ -5,7 +5,6 @@ import org.springframework.data.annotation.Version
 import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
 
-
 data class ListItem(val description: String, val position: Long, var quantity: Int,
                     val id: Long = UUID.randomUUID().mostSignificantBits and Long.MAX_VALUE)
 

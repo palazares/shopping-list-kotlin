@@ -1,6 +1,5 @@
 package com.wearewaes.shoppingList
 
-import com.wearewaes.shoppingList.domain.ListItem
 import com.wearewaes.shoppingList.domain.ShoppingList
 import io.swagger.annotations.Api
 import org.springframework.web.bind.annotation.*
@@ -35,8 +34,8 @@ class ShoppingListController(private val service: ShoppingListService) {
     }
 
     @GetMapping("{listId}")
-    fun getItems(@PathVariable listId: String,
-                 @RequestParam(value = "sortBy", required = false, defaultValue = "position") sortBy: String): Mono<List<ListItem>> {
-        return service.getItems(listId, sortBy)
+    fun getList(@PathVariable listId: String,
+                @RequestParam(value = "sortBy", required = false, defaultValue = "position") sortBy: String): Mono<ShoppingList> {
+        return service.getList(listId, sortBy)
     }
 }
